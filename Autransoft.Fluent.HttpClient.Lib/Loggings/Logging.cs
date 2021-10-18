@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 {
-    public static class Logging
+    internal static class Logging
     {
         public static StringBuilder GetHeader(Type type)
         {

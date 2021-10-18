@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
-    public class RequestFluent
+    public class RequestFluent : IDisposable
     {
         private readonly System.Net.Http.HttpClient _httpClient;
         public System.Net.Http.HttpClient HttpClient 
@@ -144,6 +144,19 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             {
                 throw new FluentHttpRequestException(ex, this, HttpStatusCode);
             }
+        }
+
+        public void Dispose()
+        {
+            _httpClient.Dispose();
+
+            HttpStatusCode = null;
+            FormData = null;
+            Headers = null;
+            Token = null;
+            Verb  = null;
+            Json = null;
+            Uri = null;
         }
     }
 }

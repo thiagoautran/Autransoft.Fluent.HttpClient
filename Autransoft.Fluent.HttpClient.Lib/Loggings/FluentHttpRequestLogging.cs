@@ -2,7 +2,7 @@ using Autransoft.Fluent.HttpClient.Lib.Exceptions;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 {
-    public static class FluentHttpRequestLogging
+    internal static class FluentHttpRequestLogging
     {
         public static string LogInformation(this FluentHttpRequestException ex)
         {

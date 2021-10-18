@@ -7,14 +7,14 @@ using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
-    public class ResponseFluent
+    public class ResponseFluent : IDisposable
     {
         private readonly HttpResponseMessage _response;
         private readonly RequestFluent _request;
 
         public HttpStatusCode? HttpStatusCode
         {
-            get => _request.HttpStatusCode;
+            get => _request?.HttpStatusCode;
         }
 
         public ResponseFluent(HttpResponseMessage response, RequestFluent request)
@@ -45,5 +45,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 throw new FluentHttpContentException(ex, _request, content, _request?.HttpStatusCode);
             }
         }
+
+        public void Dispose() => _response.Dispose();
     }
 }

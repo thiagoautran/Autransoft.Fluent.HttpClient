@@ -1,19 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using Autransoft.Fluent.HttpClient.Lib.Fluents;
 using Autransoft.Fluent.HttpClient.Lib.Helpers;
+using Autransoft.Fluent.HttpClient.Lib.Loggings;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {
     public class FluentHttpRequestException : Exception
     {
-        public Uri Uri { get; set; }
-        public string PostmanCode { get; set; }
-        public string Json { get; set; }
-        public string ContentResponse { get; set; }
+        public virtual string LogInformation { get => this.LogInformation(); }
+        public virtual string LogError { get => this.LogError(); }
+
         public HttpStatusCode? HttpStatusCode { get; set; }
+        public string ContentResponse { get; set; }
+        public string PostmanCode { get; set; }        
+        public string Json { get; set; }
+        public Uri Uri { get; set; }
 
         public FluentHttpRequestException(Exception exception, RequestFluent requestFluent, HttpStatusCode? httpStatusCode) : base(exception.Message, exception)
         {
