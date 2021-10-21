@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.Enums;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
+using Autransoft.Fluent.HttpClient.Lib.Loggings;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
@@ -25,6 +26,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         public string Json { get; private set; }
         public Uri Uri { get; private set; }
         public HttpStatusCode? HttpStatusCode { get; private set; }
+
+        public string LogInformation { get => this.LogInformation(); }
 
         public RequestFluent(System.Net.Http.HttpClient httpClient)
         {

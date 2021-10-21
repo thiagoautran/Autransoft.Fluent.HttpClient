@@ -1,25 +1,26 @@
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
+using Autransoft.Fluent.HttpClient.Lib.Fluents;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 {
     internal static class FluentHttpRequestLogging
     {
-        public static string LogInformation(this FluentHttpRequestException ex)
+        public static string LogInformation(this RequestFluent requestFluent)
         {
-            var log = Logging.GetHeader(typeof(FluentHttpRequestException));
+            var log = Logging.GetInformationHeader();
 
-            if(ex.Uri != null)
-                log.Append($"Uri:{ex.Uri}|");
+            if(requestFluent.Uri != null)
+                log.Append($"Uri:{requestFluent.Uri}|");
 
-            if(ex.HttpStatusCode != null)
-                log.Append($"HttpStatusCode:{ex.HttpStatusCode.Value}|");
+            if(requestFluent.HttpStatusCode != null)
+                log.Append($"HttpStatusCode:{requestFluent.HttpStatusCode.Value}|");
 
             return log.ToString().Substring(0, log.ToString().Length - 1);
         }
 
         public static string LogError(this FluentHttpRequestException ex)
         {
-            var log = Logging.GetHeader(typeof(FluentHttpRequestException));
+            var log = Logging.GetErrorHeader(typeof(FluentHttpRequestException));
 
             if(ex.Uri != null)
                 log.Append($"Uri:{ex.Uri}|");

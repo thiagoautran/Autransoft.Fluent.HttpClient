@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
+using Autransoft.Fluent.HttpClient.Lib.Loggings;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
@@ -12,10 +13,11 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         private readonly HttpResponseMessage _response;
         private readonly RequestFluent _request;
 
-        public HttpStatusCode? HttpStatusCode
-        {
-            get => _request?.HttpStatusCode;
-        }
+        internal RequestFluent Request { get => _request; }
+
+        public HttpStatusCode? HttpStatusCode { get => _request?.HttpStatusCode; }
+
+        public string LogInformation { get => this.LogInformation(); }
 
         public ResponseFluent(HttpResponseMessage response, RequestFluent request)
         {

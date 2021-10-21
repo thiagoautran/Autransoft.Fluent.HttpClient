@@ -5,7 +5,16 @@ namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 {
     internal static class Logging
     {
-        public static StringBuilder GetHeader(Type type)
+        public static StringBuilder GetInformationHeader()
+        {
+            var log = new StringBuilder();
+
+            log.Append($"Type:Information|");
+
+            return log;
+        }
+
+        public static StringBuilder GetErrorHeader(Type type)
         {
             var log = new StringBuilder();
 
@@ -25,6 +34,9 @@ namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 
             if(ex.InnerException != null && ex.InnerException.InnerException != null && !string.IsNullOrEmpty(ex.InnerException.InnerException.Message))
                 log.Append($"InnerException.InnerException.Message:{ex.InnerException.InnerException.Message}|");
+
+            if(ex.InnerException != null && ex.InnerException.InnerException != null && ex.InnerException.InnerException.InnerException != null && !string.IsNullOrEmpty(ex.InnerException.InnerException.InnerException.Message))
+                log.Append($"InnerException.InnerException.InnerException.Message:{ex.InnerException.InnerException.InnerException.Message}|");
 
             if(!string.IsNullOrEmpty(ex.StackTrace))
                 log.Append($"StackTrace:{ex.StackTrace}|");
