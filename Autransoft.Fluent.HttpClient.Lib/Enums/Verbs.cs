@@ -4,6 +4,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Enums
     {
         Get,
         Post,
-        Put
+        Put,
+        Delete,
+        Patch
     }
 }

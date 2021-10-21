@@ -19,6 +19,12 @@ namespace Autransoft.Fluent.HttpClient.Lib.Extensions
                 case Verbs.Put:
                     description = "Put";
                     break;
+                case Verbs.Delete:
+                    description = "Delete";
+                    break;
+                case Verbs.Patch:
+                    description = "Patch";
+                    break;
             }
 
             return description;

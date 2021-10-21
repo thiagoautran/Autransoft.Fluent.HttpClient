@@ -13,11 +13,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
     public class RequestFluent : IDisposable
     {
-        private readonly System.Net.Http.HttpClient _httpClient;
-        public System.Net.Http.HttpClient HttpClient 
-        { 
-            get => _httpClient; 
-        }
+        private System.Net.Http.HttpClient _httpClient;
+        internal System.Net.Http.HttpClient HttpClient { get => _httpClient; set => _httpClient = value; }
 
         public Dictionary<string, string> FormData { get; private set; }
         public Dictionary<string, string> Headers { get; private set; }
@@ -145,13 +142,20 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
             catch (Exception ex)
             {
+                _httpClient.Dispose();
+                _httpClient = null;
+
                 throw new FluentHttpRequestException(ex, this, HttpStatusCode);
             }
         }
 
         public void Dispose()
         {
-            _httpClient.Dispose();
+            if(_httpClient != null)
+            {
+                _httpClient.Dispose();
+                _httpClient = null;
+            }
 
             HttpStatusCode = null;
             FormData = null;

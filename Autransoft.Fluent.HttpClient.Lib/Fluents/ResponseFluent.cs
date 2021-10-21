@@ -67,7 +67,15 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
             catch(Exception ex)
             {
+                _request.HttpClient.Dispose();
+                _request.HttpClient = null;
+                
                 throw new FluentHttpContentException(ex, _request, content, _request?.HttpStatusCode);
+            }
+            finally
+            {
+                _request.HttpClient.Dispose();
+                _request.HttpClient = null;
             }
         }
 
