@@ -22,6 +22,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         public string Token { get; private set; }
         public string Json { get; private set; }
         public Uri Uri { get; private set; }
+        internal bool? UseNewtonsoft { get; private set; }
         public HttpStatusCode? HttpStatusCode { get; private set; }
 
         public string LogInformation { get => this.LogInformation(); }
@@ -37,6 +38,15 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             Json = null;
             Verb = null;
             Uri = null;
+
+            UseNewtonsoft = false;
+        }
+
+        public RequestFluent ConvertWithNewtonsoft() 
+        {
+            UseNewtonsoft = true;
+
+            return this;
         }
 
         public RequestFluent AddCleanHeader()
@@ -128,7 +138,13 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             {
                 if(requestObject != null)
                 {
-                    var json = JsonConvert.SerializeObject(requestObject);
+                    var json = string.Empty;
+                    
+                    if(UseNewtonsoft != null && UseNewtonsoft.Value)
+                        json = JsonConvert.SerializeObject(requestObject);
+                    else
+                        json = System.Text.Json.JsonSerializer.Serialize(requestObject);
+
                     var body = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
                     response = await _httpClient.PostAsync(uri, body).ConfigureAwait(false);
                 }
@@ -164,6 +180,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             Verb  = null;
             Json = null;
             Uri = null;
+
+            UseNewtonsoft = null;
         }
     }
 }

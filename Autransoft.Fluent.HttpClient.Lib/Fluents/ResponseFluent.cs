@@ -61,9 +61,16 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                     content = await _response.Content.ReadAsStringAsync();
 
                 if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
-                    return JsonConvert.DeserializeObject<ResponseObject>(content);
+                {
+                    if(_request.UseNewtonsoft != null && _request.UseNewtonsoft.Value)
+                        return JsonConvert.DeserializeObject<ResponseObject>(content);
+                    else
+                        return System.Text.Json.JsonSerializer.Deserialize<ResponseObject>(content);
+                }
                 else
+                {
                     return default(ResponseObject);
+                }
             }
             catch(Exception ex)
             {
