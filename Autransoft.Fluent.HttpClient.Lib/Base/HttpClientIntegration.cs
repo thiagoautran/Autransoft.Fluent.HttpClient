@@ -1,19 +1,21 @@
+using Autransoft.Fluent.HttpClient.Lib.Interfaces;
+
 namespace Autransoft.Fluent.HttpClient.Lib.Base
 {
-    public class HttpClientIntegration
+    public class HttpClientIntegration<Integration>
+        where Integration : class
     {
         public readonly System.Net.Http.IHttpClientFactory _clientFactory;
+        public readonly IAutranSoftFluentLogger<Integration> _logger;
         public readonly string _httpClientName;
 
-        public HttpClientIntegration(System.Net.Http.IHttpClientFactory clientFactory, string httpClientName)
+        public HttpClientIntegration(IAutranSoftFluentLogger<Integration> logger, System.Net.Http.IHttpClientFactory clientFactory, string httpClientName)
         {
-            _clientFactory = clientFactory;
             _httpClientName = httpClientName;
+            _clientFactory = clientFactory;
+            _logger = logger;
         }
 
-        public virtual System.Net.Http.HttpClient CreateHttpClient()
-        {
-            return _clientFactory.CreateClient(_httpClientName);
-        }
+        public virtual System.Net.Http.HttpClient CreateHttpClient() => _clientFactory.CreateClient(_httpClientName);
     }
 }

@@ -5,23 +5,10 @@ namespace Autransoft.Fluent.HttpClient.Lib.Loggings
 {
     internal static class FluentHttpRequestLogging
     {
-        public static string LogInformation(this RequestFluent requestFluent)
-        {
-            var log = Logging.GetInformationHeader();
-
-            if(requestFluent.Uri != null)
-                log.Append($"Uri:{requestFluent.Uri}|");
-
-            if(requestFluent.HttpStatusCode != null)
-                log.Append($"HttpStatusCode:{requestFluent.HttpStatusCode.Value}|");
-
-            return log.ToString().Substring(0, log.ToString().Length - 1);
-        }
-
-        public static string Error<Integration>(this FluentHttpRequestException ex)
+        public static string Error<Integration>(this FluentHttpRequestException<Integration> ex)
             where Integration : class
         {
-            var log = Logging.GetErrorHeader(typeof(FluentHttpRequestException), typeof(Integration));
+            var log = Logging.GetErrorHeader(typeof(FluentHttpRequestException<Integration>), typeof(Integration));
 
             if(ex.Uri != null)
                 log.Append($"Uri:{ex.Uri}|");

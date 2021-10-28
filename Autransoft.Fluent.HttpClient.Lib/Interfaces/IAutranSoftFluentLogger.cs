@@ -2,10 +2,10 @@ using Autransoft.Fluent.HttpClient.Lib.Exceptions;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Interfaces
 {
-    public interface IAutranSoftFluentLogger<Repository>
-        where Repository : class
+    public interface IAutranSoftFluentLogger<Integration>
+        where Integration : class
     {
-        void LogError(FluentHttpContentException fluentHttpContentException);
-        void LogError(FluentHttpRequestException fluentHttpRequestException);
+        void LogError(FluentHttpContentException<Integration> fluentHttpContentException);
+        void LogError(FluentHttpRequestException<Integration> fluentHttpRequestException);
     }
 }

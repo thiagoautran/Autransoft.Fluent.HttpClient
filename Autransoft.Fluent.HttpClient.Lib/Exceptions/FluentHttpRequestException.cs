@@ -6,9 +6,10 @@ using Autransoft.Fluent.HttpClient.Lib.Loggings;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {
-    public class FluentHttpRequestException : Exception
+    public class FluentHttpRequestException<Integration> : Exception
+        where Integration : class
     {
-        public virtual string LogError<Integration>() where Integration : class => this.Error<Integration>();
+        public virtual string LogError() => this.Error<Integration>();
 
         public HttpStatusCode? HttpStatusCode { get; set; }
         public string ContentResponse { get; set; }
@@ -16,7 +17,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
         public string Json { get; set; }
         public Uri Uri { get; set; }
 
-        public FluentHttpRequestException(Exception exception, RequestFluent requestFluent, HttpStatusCode? httpStatusCode) : base(exception.Message, exception)
+        public FluentHttpRequestException(Exception exception, RequestFluent<Integration> requestFluent, HttpStatusCode? httpStatusCode) : base(exception.Message, exception)
         {
             Uri = requestFluent.Uri;
             Json = requestFluent.Json;
@@ -25,7 +26,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
             PostmanCode = PostmanHelper.GeneratePostmanCode(requestFluent.Verb.Value, requestFluent.Uri, requestFluent.Headers, requestFluent.Token, requestFluent.FormData, requestFluent.Json);
         }
 
-        public FluentHttpRequestException(Exception exception, RequestFluent requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception.Message, exception)
+        public FluentHttpRequestException(Exception exception, RequestFluent<Integration> requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception.Message, exception)
         {
             Uri = requestFluent.Uri;
             Json = requestFluent.Json;

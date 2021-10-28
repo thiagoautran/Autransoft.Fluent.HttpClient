@@ -6,13 +6,16 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.Enums;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
-using Autransoft.Fluent.HttpClient.Lib.Loggings;
+using Autransoft.Fluent.HttpClient.Lib.Interfaces;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
-    public class RequestFluent : IDisposable
+    public class RequestFluent<Integration> : IDisposable
+        where Integration : class
     {
+        private readonly IAutranSoftFluentLogger<Integration> _logger;
+        
         private System.Net.Http.HttpClient _httpClient;
         internal System.Net.Http.HttpClient HttpClient { get => _httpClient; set => _httpClient = value; }
 
@@ -25,11 +28,10 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         internal bool? UseNewtonsoft { get; private set; }
         public HttpStatusCode? HttpStatusCode { get; private set; }
 
-        public string LogInformation { get => this.LogInformation(); }
-
-        public RequestFluent(System.Net.Http.HttpClient httpClient)
+        public RequestFluent(System.Net.Http.HttpClient httpClient, IAutranSoftFluentLogger<Integration> logger)
         {
             _httpClient = httpClient;
+            _logger = logger;
 
             HttpStatusCode = null;
             FormData = null;
@@ -42,21 +44,21 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             UseNewtonsoft = false;
         }
 
-        public RequestFluent ConvertWithNewtonsoft() 
+        public RequestFluent<Integration> ConvertWithNewtonsoft() 
         {
             UseNewtonsoft = true;
 
             return this;
         }
 
-        public RequestFluent AddCleanHeader()
+        public RequestFluent<Integration> AddCleanHeader()
         {
             _httpClient.DefaultRequestHeaders.Clear();
 
             return this;
         }
 
-        public RequestFluent AddHeaders(Dictionary<string, string> headers = null)
+        public RequestFluent<Integration> AddHeaders(Dictionary<string, string> headers = null)
         {
             if(headers != null)
             {
@@ -85,7 +87,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             return string.Empty;
         }
 
-        public RequestFluent AddToken(string token = null)
+        public RequestFluent<Integration> AddToken(string token = null)
         {
             if(!string.IsNullOrEmpty(token))
             {
@@ -100,7 +102,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             return this;
         }
 
-        public async Task<ResponseFluent> GetAsync(Uri uri)
+        public async Task<ResponseFluent<Integration>> GetAsync(Uri uri)
         {
             Uri = uri;
             Verb = Verbs.Get;
@@ -111,22 +113,22 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 response = await _httpClient.GetAsync(uri);
 
                 HttpStatusCode = response.StatusCode;
-                return new ResponseFluent(response, this);
+                return new ResponseFluent<Integration>(response, this);
             }
             catch(Exception ex)
             {
-                throw new FluentHttpRequestException(ex, this, HttpStatusCode);
+                throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
             }
         }
 
-        public async Task<ResponseFluent> PostAsync(Uri uri, Dictionary<string, string> formData) =>
+        public async Task<ResponseFluent<Integration>> PostAsync(Uri uri, Dictionary<string, string> formData) =>
             await PostAsync<object>(uri, null, formData);
 
-        public async Task<ResponseFluent> PostAsync<RequestObject>(Uri uri, RequestObject requestObject)
+        public async Task<ResponseFluent<Integration>> PostAsync<RequestObject>(Uri uri, RequestObject requestObject)
             where RequestObject : class =>
             await PostAsync(uri, requestObject, null);
 
-        private async Task<ResponseFluent> PostAsync<RequestObject>(Uri uri, RequestObject requestObject, Dictionary<string, string> formData)
+        private async Task<ResponseFluent<Integration>> PostAsync<RequestObject>(Uri uri, RequestObject requestObject, Dictionary<string, string> formData)
             where RequestObject : class
         {
             Uri = uri;
@@ -154,14 +156,14 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 }
 
                 HttpStatusCode = response.StatusCode;
-                return new ResponseFluent(response, this);
+                return new ResponseFluent<Integration>(response, this);
             }
             catch (Exception ex)
             {
                 _httpClient.Dispose();
                 _httpClient = null;
 
-                throw new FluentHttpRequestException(ex, this, HttpStatusCode);
+                throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
             }
         }
 

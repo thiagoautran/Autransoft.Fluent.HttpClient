@@ -2,24 +2,24 @@ using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Autransoft.Fluent.HttpClient.Lib.DTOs;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
 using Autransoft.Fluent.HttpClient.Lib.Loggings;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
-    public class ResponseFluent : IDisposable
+    public class ResponseFluent<Integration> : IDisposable
+        where Integration : class
     {
         private readonly HttpResponseMessage _response;
-        private readonly RequestFluent _request;
+        private readonly RequestFluent<Integration> _request;
 
-        internal RequestFluent Request { get => _request; }
+        internal RequestFluent<Integration> Request { get => _request; }
 
         public HttpStatusCode? HttpStatusCode { get => _request?.HttpStatusCode; }
 
-        public string LogInformation { get => this.LogInformation(); }
-
-        public ResponseFluent(HttpResponseMessage response, RequestFluent request)
+        public ResponseFluent(HttpResponseMessage response, RequestFluent<Integration> request)
         {
             _response = response;
             _request = request;
@@ -44,16 +44,16 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
             catch(Exception ex)
             {
-                throw new FluentHttpContentException(ex, _request, content, _request?.HttpStatusCode);
+                throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
             }
         }
 
-        public async Task<ResponseObject> DeserializeAsync<ResponseObject>()
+        public async Task<ResponseDto<ResponseObject>> DeserializeAsync<ResponseObject>()
         {
             var content = string.Empty;
 
             if(_response == null)
-                return default(ResponseObject);
+                return default(ResponseDto<ResponseObject>);
 
             try
             {
@@ -63,13 +63,13 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
                 {
                     if(_request.UseNewtonsoft != null && _request.UseNewtonsoft.Value)
-                        return JsonConvert.DeserializeObject<ResponseObject>(content);
+                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, JsonConvert.DeserializeObject<ResponseObject>(content));
                     else
-                        return System.Text.Json.JsonSerializer.Deserialize<ResponseObject>(content);
+                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, System.Text.Json.JsonSerializer.Deserialize<ResponseObject>(content));
                 }
                 else
                 {
-                    return default(ResponseObject);
+                    return default(ResponseDto<ResponseObject>);
                 }
             }
             catch(Exception ex)
@@ -77,7 +77,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 _request.HttpClient.Dispose();
                 _request.HttpClient = null;
                 
-                throw new FluentHttpContentException(ex, _request, content, _request?.HttpStatusCode);
+                throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
             }
             finally
             {

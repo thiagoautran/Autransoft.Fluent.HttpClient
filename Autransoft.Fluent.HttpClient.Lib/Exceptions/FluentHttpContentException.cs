@@ -5,11 +5,12 @@ using Autransoft.Fluent.HttpClient.Lib.Loggings;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {
-    public class FluentHttpContentException : FluentHttpRequestException
+    public class FluentHttpContentException<Integration> : FluentHttpRequestException<Integration>
+        where Integration : class
     {
-        public override string LogError<Integration>() where Integration : class => this.Error<Integration>();
+        public override string LogError() => this.Error<Integration>();
 
-        public FluentHttpContentException(Exception exception, RequestFluent requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception, requestFluent, contentRequest, httpStatusCode)
+        public FluentHttpContentException(Exception exception, RequestFluent<Integration> requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception, requestFluent, contentRequest, httpStatusCode)
         {
         }
     }
