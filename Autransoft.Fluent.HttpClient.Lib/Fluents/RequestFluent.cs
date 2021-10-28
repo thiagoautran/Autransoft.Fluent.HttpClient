@@ -51,14 +51,14 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             return this;
         }
 
-        public RequestFluent<Integration> AddCleanHeader()
+        public RequestFluent<Integration> CleanDefaultRequestHeaders()
         {
             _httpClient.DefaultRequestHeaders.Clear();
 
             return this;
         }
 
-        public RequestFluent<Integration> AddHeaders(Dictionary<string, string> headers = null)
+        public RequestFluent<Integration> AddDefaultRequestHeaders(Dictionary<string, string> headers = null)
         {
             if(headers != null)
             {
@@ -87,7 +87,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             return string.Empty;
         }
 
-        public RequestFluent<Integration> AddToken(string token = null)
+        public RequestFluent<Integration> AddBearerToken(string token = null)
         {
             if(!string.IsNullOrEmpty(token))
             {
@@ -113,11 +113,12 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 response = await _httpClient.GetAsync(uri);
 
                 HttpStatusCode = response.StatusCode;
-                return new ResponseFluent<Integration>(response, this);
+                return new ResponseFluent<Integration>(response, this, _logger);
             }
             catch(Exception ex)
             {
-                throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
+                _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
+                return default(ResponseFluent<Integration>);
             }
         }
 
@@ -156,14 +157,15 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 }
 
                 HttpStatusCode = response.StatusCode;
-                return new ResponseFluent<Integration>(response, this);
+                return new ResponseFluent<Integration>(response, this, _logger);
             }
             catch (Exception ex)
             {
                 _httpClient.Dispose();
                 _httpClient = null;
 
-                throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
+                _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
+                return default(ResponseFluent<Integration>);
             }
         }
 

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.DTOs;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
-using Autransoft.Fluent.HttpClient.Lib.Loggings;
+using Autransoft.Fluent.HttpClient.Lib.Interfaces;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
@@ -12,6 +12,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
     public class ResponseFluent<Integration> : IDisposable
         where Integration : class
     {
+        private readonly IAutranSoftFluentLogger<Integration> _logger;
         private readonly HttpResponseMessage _response;
         private readonly RequestFluent<Integration> _request;
 
@@ -19,10 +20,11 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 
         public HttpStatusCode? HttpStatusCode { get => _request?.HttpStatusCode; }
 
-        public ResponseFluent(HttpResponseMessage response, RequestFluent<Integration> request)
+        public ResponseFluent(HttpResponseMessage response, RequestFluent<Integration> request, IAutranSoftFluentLogger<Integration> logger)
         {
             _response = response;
             _request = request;
+            _logger = logger;
         }
 
         public async Task<string> ContentAsStringAsync()
@@ -44,7 +46,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
             catch(Exception ex)
             {
-                throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
+                _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
+                return default(string);
             }
         }
 
@@ -77,7 +80,8 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 _request.HttpClient.Dispose();
                 _request.HttpClient = null;
                 
-                throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
+                _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
+                return default(ResponseDto<ResponseObject>);
             }
             finally
             {
