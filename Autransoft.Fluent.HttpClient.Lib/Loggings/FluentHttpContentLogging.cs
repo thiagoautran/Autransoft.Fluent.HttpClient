@@ -15,9 +15,10 @@ namespace Autransoft.Fluent.HttpClient.Lib.Loggings
             return log.ToString().Substring(0, log.ToString().Length - 1);
         }
 
-        public static string LogError(this FluentHttpContentException ex)
+        public static string Error<Integration>(this FluentHttpContentException ex)
+            where Integration : class
         {
-            var log = Logging.GetErrorHeader(typeof(FluentHttpContentException));
+            var log = Logging.GetErrorHeader(typeof(FluentHttpContentException), typeof(Integration));
 
             if(ex.Uri != null)
                 log.Append($"Uri:{ex.Uri}|");

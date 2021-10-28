@@ -7,7 +7,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {
     public class FluentHttpContentException : FluentHttpRequestException
     {
-        public override string LogError { get => this.LogError(); }
+        public override string LogError<Integration>() where Integration : class => this.Error<Integration>();
 
         public FluentHttpContentException(Exception exception, RequestFluent requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception, requestFluent, contentRequest, httpStatusCode)
         {

@@ -8,8 +8,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {
     public class FluentHttpRequestException : Exception
     {
-        
-        public virtual string LogError { get => this.LogError(); }
+        public virtual string LogError<Integration>() where Integration : class => this.Error<Integration>();
 
         public HttpStatusCode? HttpStatusCode { get; set; }
         public string ContentResponse { get; set; }
