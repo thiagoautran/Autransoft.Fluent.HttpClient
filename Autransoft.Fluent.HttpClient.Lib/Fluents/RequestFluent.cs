@@ -118,7 +118,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             catch(Exception ex)
             {
                 _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
-                return default(ResponseFluent<Integration>);
+                return new ResponseFluent<Integration>(null, null, null);
             }
         }
 
@@ -165,7 +165,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 _httpClient = null;
 
                 _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
-                return default(ResponseFluent<Integration>);
+                return new ResponseFluent<Integration>(null, null, null);
             }
         }
 
