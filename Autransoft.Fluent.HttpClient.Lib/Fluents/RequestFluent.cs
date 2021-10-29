@@ -171,11 +171,11 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 
         public void Dispose()
         {
-            if(_httpClient != null)
-            {
-                _httpClient.Dispose();
-                _httpClient = null;
-            }
+            //if(_httpClient != null)
+            //{
+            //    _httpClient.Dispose();
+            //    _httpClient = null;
+            //}
 
             HttpStatusCode = null;
             FormData = null;
