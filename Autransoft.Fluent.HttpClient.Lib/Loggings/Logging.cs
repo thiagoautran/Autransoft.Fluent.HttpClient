@@ -14,6 +14,17 @@ namespace Autransoft.Fluent.HttpClient.Lib.Loggings
             return log;
         }
 
+        public static StringBuilder GetInfoHeader(Type exception, Type integration)
+        {
+            var log = new StringBuilder();
+
+            log.Append($"Type:Information|");
+            log.Append($"Exception:{exception.Name}|");
+            log.Append($"Class:{integration.Name}|");
+
+            return log;
+        }
+
         public static StringBuilder GetErrorHeader(Type exception, Type integration)
         {
             var log = new StringBuilder();

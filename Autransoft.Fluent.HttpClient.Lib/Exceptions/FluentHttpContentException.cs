@@ -9,9 +9,15 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
         where Integration : class
     {
         public override string LogError() => this.Error<Integration>();
+        public override string LogInformation() => this.Info<Integration>();
 
-        public FluentHttpContentException(Exception exception, RequestFluent<Integration> requestFluent, string contentRequest, HttpStatusCode? httpStatusCode) : base(exception, requestFluent, contentRequest, httpStatusCode)
-        {
-        }
+        public FluentHttpContentException
+        (
+            Exception exception, 
+            RequestFluent<Integration> requestFluent, 
+            string contentRequest, 
+            HttpStatusCode? httpStatusCode
+        ) 
+        : base(exception, requestFluent, contentRequest, httpStatusCode) { }
     }
 }

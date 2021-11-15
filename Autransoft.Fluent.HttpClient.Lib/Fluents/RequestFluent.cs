@@ -21,12 +21,16 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 
         public Dictionary<string, string> FormData { get; private set; }
         public Dictionary<string, string> Headers { get; private set; }
-        internal Verbs? Verb { get; private set; }
+        public HttpStatusCode? HttpStatusCode { get; private set; }
         public string Token { get; private set; }
         public string Json { get; private set; }
         public Uri Uri { get; private set; }
+        
         internal bool? UseNewtonsoft { get; private set; }
-        public HttpStatusCode? HttpStatusCode { get; private set; }
+        internal bool? LogError { get; private set; }
+        internal bool? LogInfo { get; private set; }
+        internal bool? ThrowEx { get; private set; }
+        internal Verbs? Verb { get; private set; }
 
         public RequestFluent(System.Net.Http.HttpClient httpClient, IAutranSoftFluentLogger<Integration> logger)
         {
@@ -42,6 +46,31 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             Uri = null;
 
             UseNewtonsoft = false;
+            ThrowEx = false;
+            LogInfo = false;
+
+            LogError = true;
+        }
+
+        public RequestFluent<Integration> ThrowException() 
+        {
+            ThrowEx = true;
+
+            return this;
+        }
+
+        public RequestFluent<Integration> NotLogError() 
+        {
+            LogError = false;
+
+            return this;
+        }
+
+        public RequestFluent<Integration> LogInformation() 
+        {
+            LogInfo = true;
+
+            return this;
         }
 
         public RequestFluent<Integration> ConvertWithNewtonsoft() 
@@ -113,12 +142,18 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 response = await _httpClient.GetAsync(uri);
 
                 HttpStatusCode = response.StatusCode;
+
                 return new ResponseFluent<Integration>(response, this, _logger);
             }
             catch(Exception ex)
             {
-                _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
-                return new ResponseFluent<Integration>(null, null, null);
+                if(LogError != null && LogError.Value)
+                    _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
+
+                if(ThrowEx != null && ThrowEx.Value)
+                    throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
+                else
+                    return new ResponseFluent<Integration>(null, null, null);
             }
         }
 
@@ -139,6 +174,9 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 
             try
             {
+                if(LogInfo != null && LogInfo.Value)
+                    _logger.LogInformation(new FluentHttpRequestException<Integration>(null, this, HttpStatusCode));
+ 
                 if(requestObject != null)
                 {
                     var json = string.Empty;
@@ -161,21 +199,23 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
             catch (Exception ex)
             {
-                _httpClient.Dispose();
-                _httpClient = null;
+                if(LogError != null && LogError.Value)
+                    _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
 
-                _logger.LogError(new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode));
-                return new ResponseFluent<Integration>(null, null, null);
+                if(ThrowEx != null && ThrowEx.Value)
+                    throw new FluentHttpRequestException<Integration>(ex, this, HttpStatusCode);
+                else
+                    return new ResponseFluent<Integration>(null, null, null);
             }
         }
 
         public void Dispose()
         {
-            //if(_httpClient != null)
-            //{
-            //    _httpClient.Dispose();
-            //    _httpClient = null;
-            //}
+            if(_httpClient != null)
+            {
+                _httpClient.Dispose();
+                _httpClient = null;
+            }
 
             HttpStatusCode = null;
             FormData = null;
@@ -186,6 +226,9 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             Uri = null;
 
             UseNewtonsoft = null;
+            LogError = null;
+            LogInfo = null;
+            ThrowEx = null;
         }
     }
 }

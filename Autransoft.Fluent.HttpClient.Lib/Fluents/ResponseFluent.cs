@@ -17,37 +17,68 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         private readonly RequestFluent<Integration> _request;
 
         internal RequestFluent<Integration> Request { get => _request; }
+        internal bool? LogError { get; private set; }
+        internal bool? LogInfo { get; private set; }
+        internal bool? ThrowEx { get; private set; }
 
         public HttpStatusCode? HttpStatusCode { get => _request?.HttpStatusCode; }
-
+        
         public ResponseFluent(HttpResponseMessage response, RequestFluent<Integration> request, IAutranSoftFluentLogger<Integration> logger)
         {
             _response = response;
             _request = request;
             _logger = logger;
+
+            LogInfo = false;
+            ThrowEx = false;
+
+            LogError = true;
         }
 
-        public async Task<string> ContentAsStringAsync()
+        public ResponseFluent<Integration> ThrowException() 
+        {
+            ThrowEx = true;
+
+            return this;
+        }
+
+        public ResponseFluent<Integration> NotLogError() 
+        {
+            LogError = false;
+
+            return this;
+        }
+
+        public ResponseFluent<Integration> LogInformation() 
+        {
+            LogInfo = true;
+
+            return this;
+        }
+
+        public async Task<ResponseDto<string>> ContentAsStringAsync()
         {
             var content = string.Empty;
 
             if(_response == null)
-                return default(string);
+                return null;
 
             try
             {
                 if(_response.Content != null)
                     content = await _response.Content.ReadAsStringAsync();
 
-                if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
-                    return content;
-                else
-                    return default(string);
+                return new ResponseDto<string>(_request.HttpStatusCode, content);
             }
             catch(Exception ex)
             {
-                _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
-                return default(string);
+                if(LogError != null && LogError.Value)
+                    _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
+
+                if(ThrowEx != null && ThrowEx.Value)
+                    throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
+                else
+                    return null;
             }
         }
 
@@ -56,12 +87,15 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             var content = string.Empty;
 
             if(_response == null)
-                return default(ResponseDto<ResponseObject>);
+                return null;
 
             try
             {
                 if(_response.Content != null)
                     content = await _response.Content.ReadAsStringAsync();
+
+                if(LogInfo != null && LogInfo.Value)
+                    _logger.LogInformation(new FluentHttpContentException<Integration>(null, _request, content, _request?.HttpStatusCode));
 
                 if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
                 {
@@ -72,21 +106,18 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 }
                 else
                 {
-                    return default(ResponseDto<ResponseObject>);
+                    return new ResponseDto<ResponseObject>(_request.HttpStatusCode, content);
                 }
             }
             catch(Exception ex)
             {
-                _request.HttpClient.Dispose();
-                _request.HttpClient = null;
+                if(LogError != null && LogError.Value)
+                    _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
                 
-                _logger.LogError(new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode));
-                return default(ResponseDto<ResponseObject>);
-            }
-            finally
-            {
-                _request.HttpClient.Dispose();
-                _request.HttpClient = null;
+                if(ThrowEx != null && ThrowEx.Value)
+                    throw new FluentHttpContentException<Integration>(ex, _request, content, _request?.HttpStatusCode);
+                else
+                    return null;
             }
         }
 
