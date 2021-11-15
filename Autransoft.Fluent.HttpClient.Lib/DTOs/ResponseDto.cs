@@ -8,10 +8,11 @@ namespace Autransoft.Fluent.HttpClient.Lib.DTOs
         public ResponseObject Data { get; set; }
         public string Content { get; set; }
 
-        public ResponseDto(HttpStatusCode? httpStatusCode, ResponseObject responseObject)
+        public ResponseDto(HttpStatusCode? httpStatusCode, ResponseObject responseObject, string content)
         {
             HttpStatusCode = httpStatusCode;
             Data = responseObject;
+            Content = content;
         }
 
         public ResponseDto(HttpStatusCode? httpStatusCode, string content)

@@ -100,9 +100,9 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
                 {
                     if(_request.UseNewtonsoft != null && _request.UseNewtonsoft.Value)
-                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, JsonConvert.DeserializeObject<ResponseObject>(content));
+                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, JsonConvert.DeserializeObject<ResponseObject>(content), content);
                     else
-                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, System.Text.Json.JsonSerializer.Deserialize<ResponseObject>(content));
+                        return new ResponseDto<ResponseObject>(_request.HttpStatusCode, System.Text.Json.JsonSerializer.Deserialize<ResponseObject>(content), content);
                 }
                 else
                 {
