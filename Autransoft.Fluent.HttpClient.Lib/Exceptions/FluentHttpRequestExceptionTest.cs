@@ -13,7 +13,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
         public string PostmanCode { get; set; }        
         public string Json { get; set; }
         public string Verb { get; set; }
-        public Uri Uri { get; set; }
+        public string Uri { get; set; }
 
         public FluentHttpRequestExceptionTest
         (

@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.Enums;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
-using Autransoft.Fluent.HttpClient.Lib.Interfaces;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
@@ -22,7 +21,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         public HttpStatusCode? HttpStatusCode { get; private set; }
         public string Token { get; private set; }
         public string Json { get; private set; }
-        public Uri Uri { get; private set; }
+        public string Uri { get; private set; }
         
         internal bool? UseNewtonsoft { get; private set; }
         internal Verbs? Verb { get; private set; }
@@ -100,7 +99,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             return this;
         }
 
-        public async Task<ResponseFluentTest> GetAsync(Uri uri)
+        public async Task<ResponseFluentTest> GetAsync(string uri)
         {
             Uri = uri;
             Verb = Verbs.Get;
@@ -120,14 +119,14 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             }
         }
 
-        public async Task<ResponseFluentTest> PostAsync(Uri uri, Dictionary<string, string> formData) =>
+        public async Task<ResponseFluentTest> PostAsync(string uri, Dictionary<string, string> formData) =>
             await PostAsync<object>(uri, null, formData);
 
-        public async Task<ResponseFluentTest> PostAsync<RequestObject>(Uri uri, RequestObject requestObject)
+        public async Task<ResponseFluentTest> PostAsync<RequestObject>(string uri, RequestObject requestObject)
             where RequestObject : class =>
             await PostAsync(uri, requestObject, null);
 
-        private async Task<ResponseFluentTest> PostAsync<RequestObject>(Uri uri, RequestObject requestObject, Dictionary<string, string> formData)
+        private async Task<ResponseFluentTest> PostAsync<RequestObject>(string uri, RequestObject requestObject, Dictionary<string, string> formData)
             where RequestObject : class
         {
             Uri = uri;

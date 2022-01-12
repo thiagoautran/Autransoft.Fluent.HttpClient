@@ -4,7 +4,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Autransoft.Fluent.HttpClient.Lib.DTOs;
 using Autransoft.Fluent.HttpClient.Lib.Exceptions;
-using Autransoft.Fluent.HttpClient.Lib.Interfaces;
 using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
