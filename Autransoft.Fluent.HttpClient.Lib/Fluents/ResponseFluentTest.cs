@@ -55,7 +55,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
                 if(_response.Content != null)
                     content = await _response.Content.ReadAsStringAsync();
 
-                if(!string.IsNullOrEmpty(content) && _response.IsSuccessStatusCode)
+                if(!string.IsNullOrEmpty(content))
                 {
                     if(_request.UseNewtonsoft != null && _request.UseNewtonsoft.Value)
                         return new ResponseDto<ResponseObject>(_request.HttpStatusCode, JsonConvert.DeserializeObject<ResponseObject>(content), content);
