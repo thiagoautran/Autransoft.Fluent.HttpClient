@@ -1,7 +1,7 @@
-using System;
-using System.Net;
 using Autransoft.Fluent.HttpClient.Lib.Fluents;
 using Autransoft.Fluent.HttpClient.Lib.Loggings;
+using System;
+using System.Net;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Exceptions
 {

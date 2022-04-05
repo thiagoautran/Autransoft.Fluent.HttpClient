@@ -1,5 +1,5 @@
-using System;
 using Autransoft.Fluent.HttpClient.Lib.Fluents;
+using System;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Helpers
 {

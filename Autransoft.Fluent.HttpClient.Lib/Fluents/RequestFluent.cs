@@ -1,13 +1,13 @@
+using Autransoft.Fluent.HttpClient.Lib.Enums;
+using Autransoft.Fluent.HttpClient.Lib.Exceptions;
+using Autransoft.Fluent.HttpClient.Lib.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Autransoft.Fluent.HttpClient.Lib.Enums;
-using Autransoft.Fluent.HttpClient.Lib.Exceptions;
-using Autransoft.Fluent.HttpClient.Lib.Interfaces;
-using Newtonsoft.Json;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Fluents
 {
@@ -135,11 +135,10 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
         {
             Uri = uri;
             Verb = Verbs.Get;
-            HttpResponseMessage response = null;
-
+            
             try
             {
-                response = await _httpClient.GetAsync(uri);
+                var response = await _httpClient.GetAsync(uri);
 
                 HttpStatusCode = response.StatusCode;
 
@@ -170,7 +169,7 @@ namespace Autransoft.Fluent.HttpClient.Lib.Fluents
             Uri = uri;
             FormData = formData;
             Verb = Verbs.Post;
-            HttpResponseMessage response = null;
+            HttpResponseMessage response;
 
             try
             {

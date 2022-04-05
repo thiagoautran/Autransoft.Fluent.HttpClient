@@ -1,8 +1,8 @@
+using Autransoft.Fluent.HttpClient.Lib.Enums;
+using Autransoft.Fluent.HttpClient.Lib.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Autransoft.Fluent.HttpClient.Lib.Enums;
-using Autransoft.Fluent.HttpClient.Lib.Extensions;
 
 namespace Autransoft.Fluent.HttpClient.Lib.Helpers
 {
