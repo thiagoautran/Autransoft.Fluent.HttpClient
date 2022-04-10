@@ -7,6 +7,6 @@ namespace Autransoft.Fluent.HttpClient.Lib.Helpers
     {
         public static Uri GetUri<Integration>(this RequestFluent<Integration> requestFluent, string urn)
             where Integration : class =>
-            new Uri($"{requestFluent.HttpClient.BaseAddress.AbsoluteUri}/{urn}".Replace("//", "/").Replace("https:/", "https://").Replace("http:/", "http://"));
+            new Uri($"{requestFluent?.HttpClient?.BaseAddress?.AbsoluteUri}/{urn}".Replace("//", "/").Replace("https:/", "https://").Replace("http:/", "http://"));
     }
 }
